@@ -1,0 +1,149 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package fish;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+/**
+ *
+ * @author abc
+ */
+public class Pool {
+    
+    static Object[] array = new Object[10];
+    
+    public static void create(int number){
+        Random rand = new Random();
+        
+        
+        int i=0;
+    
+        double dir[]=new double[2];
+        dir[0]=0;
+        dir[1]=0;
+        double goal1[]=new double[2];
+        goal1[0]=0;
+        goal1[1]=1;
+        double goal2[]=new double[2];
+        goal2[0]=0;
+        goal2[1]=-0.5;
+        
+        for(i=0;i<array.length/2;i++){
+           array[i]=new Object(100+20*rand.nextGaussian(),100+20*rand.nextGaussian(),10,dir,goal1);
+           
+        }
+        for(i=array.length/2;i<array.length;i++){
+           array[i]=new Object(200+20*rand.nextGaussian(),100+20*rand.nextGaussian(),10,dir,goal2);
+           
+        }
+        
+    }
+    
+    static void run(){
+        //Pool.create(10);
+        
+        int i=0;
+        int j=0;
+        
+        
+        double dt=0.1;
+        double t=0;
+        
+        
+                
+      
+        for(t=0;t<50000;t++){
+            t=t+dt;
+            i=0;
+          
+             
+            for (Object o: Pool.array){
+               
+               // o.socheading[0]=-Math.sin(Math.atan2((o.y-100),(o.x-100)));
+                //o.socheading[1]=Math.cos(Math.atan2((o.y-100),(o.x-100)));
+                
+                
+                for (Object p: Pool.array){
+                    double dist=Math.sqrt((p.x-o.x)*(p.x-o.x)+(p.y-o.y)*(p.y-o.y));
+                    
+                    if(o!=p&&dist<2){
+                    o.socheading[0]=o.socheading[0]-(p.x-o.x)/dist;
+                    o.socheading[1]=o.socheading[1]-(p.y-o.y)/dist;
+                            }
+                    
+                    if(o!=p&&dist<4&&dist>2){
+                        o.socheading[0]=o.socheading[0]+(p.x-o.x)/dist+p.socheading[0];
+                    o.socheading[1]=o.socheading[1]+(p.y-o.y)/dist+p.socheading[0];
+                    }
+                    
+                    //System.out.print(""+Math.pow(o.socheading[0],2)+Math.pow(o.socheading[1],2));
+                }
+                
+                
+               double norm=Math.sqrt(Math.pow(o.socheading[0],2)+Math.pow(o.socheading[1],2));
+                
+                o.socheading[0]=o.socheading[0]/norm;
+                o.socheading[1]=o.socheading[1]/norm;
+            
+                o.heading[0]=o.socheading[0]+0.5*o.goal[0];                                                            
+                o.heading[1]=o.socheading[1]+0.5*o.goal[1];
+                
+                o.x=o.x+dt*(o.heading[0]*o.speed);
+                o.y=o.y+dt*(o.heading[1]*o.speed);
+                
+                o.goal[0]=(650-o.x);
+                o.goal[1]=(100-o.y);
+                
+                norm=Math.sqrt(Math.pow(o.goal[0],2)+Math.pow(o.goal[1],2));
+                o.goal[0]=o.goal[0]/norm;
+                o.goal[1]=o.goal[1]/norm;
+                
+                
+                
+            }
+            
+             
+            for (Object a: Pool.array){
+               double norm=Math.sqrt(Math.pow(a.socheading[0],2)+Math.pow(a.socheading[1],2));
+                
+                a.socheading[0]=a.socheading[0]/norm;
+                a.socheading[1]=a.socheading[1]/norm;
+                
+                norm=Math.sqrt(Math.pow(a.goal[0],2)+Math.pow(a.goal[1],2));
+                a.goal[0]=a.goal[0]/norm;
+                a.goal[1]=a.goal[1]/norm;
+            }
+            
+            
+            
+            
+            
+            //System.out.println("go");
+              fish.GUI.Arena.paintImmediately(0, 0, 2000, 2000);
+            fish.GUI.Arena.revalidate();
+            //System.out.println("printing");
+            try {
+                Thread.sleep(0);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Pool.class.getName()).log(Level.SEVERE, null, ex);
+            }
+             
+            
+         
+   
+          
+           
+        }
+        
+      
+            
+                
+             
+        
+        }
+        }
+
+  
+
